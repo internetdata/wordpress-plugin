@@ -2,6 +2,12 @@
 
 What each release changed for you, newest first. Each line is a commit's summary, linked to its full description and diff.
 
+## 1.0.1 - 2026-11-14
+
+### Fixes
+
+- Judge a privacy relay by relay alone, even on a hosting network ([`ba85637`](https://github.com/internetdata/wordpress-plugin/commit/ba856378572022906291ae00adcdd2f0d97e53cd))
+
 ## 1.0.0 - 2026-11-14
 
 ### Features
