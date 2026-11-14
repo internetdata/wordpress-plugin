@@ -5,7 +5,7 @@
 
 The official [InternetData](https://internetdata.io) plugin for [WordPress](https://wordpress.org).
 
-It blocks or allows visitors by country, sends them on to the site for their country, and blocks, holds or flags those who come through VPNs, proxies, Tor and hosting networks, where you choose: sign-in, sign-ups, password resets, comments, contact forms, WooCommerce checkout and pages.
+It blocks or allows countries, sends visitors on by country, and catches VPNs, proxies, Tor and hosting. It logs, holds or blocks where you choose: sign-in, sign-ups, password resets, comments, contact forms, WooCommerce checkout and pages.
 
 ## Getting Started
 
