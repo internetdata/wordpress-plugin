@@ -43,7 +43,7 @@ Start each area on Log only and the Activity tab lists who it would have caught,
 
 = 🎯 What it can tell apart =
 
-Countries, VPNs, Tor, public proxies, residential proxies, mobile proxies, datacenter proxies, hosting and cloud servers, and privacy relays such as iCloud Private Relay. Every area uses the same list unless you give it one of its own, so comments can catch hosting servers while sign-in leaves them alone.
+Countries, VPNs, Tor, public proxies, residential proxies, mobile proxies, datacenter proxies, hosting and cloud servers, and privacy relays such as iCloud Private Relay. Every area uses the same list unless you give it one of its own, so comments can catch hosting servers while sign-in leaves them alone. A privacy relay counts as a relay alone, even where it runs on a hosting network, so iCloud Private Relay visitors aren't refused as hosting.
 
 = 🎁 Free to start =
 

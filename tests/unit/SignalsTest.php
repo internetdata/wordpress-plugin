@@ -86,6 +86,20 @@ final class SignalsTest extends TestCase
         $this->assertFalse(Condition::matches(Signals::condition(['hosting'], 1, $paid), $paid), 'a paid answer is taken at its word');
     }
 
+    /** WARP, iCloud Private Relay and Zscaler run on hosting networks: a relay is judged as a relay alone. */
+    public function testARelayOnAHostingNetworkIsNotHosting(): void
+    {
+        $warp = new Asn(asn: 13335, name: 'Cloudflare, Inc.', domain: 'cloudflare.com', type: 'hosting', prefix: '104.28.0.0/16');
+        $unlimited = self::answer(['isRelay' => true, 'asn' => $warp]);
+        $this->assertSame([], Signals::condition(['hosting'], 1, $unlimited));
+        $this->assertNull(Signals::one('hosting', 1, $unlimited));
+        $paid = self::answer(['isRelay' => true, 'isHosting' => true, 'hosting' => new ClassDetail(), 'asn' => $warp]);
+        $this->assertSame([], Signals::condition(['hosting'], 1, $paid));
+        $condition = Signals::condition(['vpn', 'hosting', 'relay'], 1, $paid);
+        $this->assertSame([['isVpn' => true], ['isRelay' => true]], $condition);
+        $this->assertTrue(Condition::matches($condition, $paid), 'the relay signal still matches it');
+    }
+
     public function testBlockingCountries(): void
     {
         $sweden = self::answer(['location' => self::location('SE')]);
