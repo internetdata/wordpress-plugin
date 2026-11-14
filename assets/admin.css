@@ -1,0 +1,87 @@
+.inetd .inetd-card {
+    max-width: 52rem;
+    margin: 1rem 0;
+    padding: 0.25rem 1.25rem 0.75rem;
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+}
+
+.inetd .inetd-card h2 {
+    font-size: 1.1em;
+}
+
+.inetd .inetd-warn {
+    padding-left: 0.75rem;
+    border-left: 4px solid #dba617;
+}
+
+.inetd .inetd-signals {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+    gap: 0.75rem 1.5rem;
+    max-width: 52rem;
+    margin: 0.5rem 0 1rem;
+}
+
+.inetd .inetd-signal .description {
+    display: block;
+    margin-left: 1.6rem;
+}
+
+.inetd .inetd-signal .inetd-countries,
+.inetd .inetd-signal .inetd-countries-mode {
+    display: block;
+    width: calc(100% - 1.6rem);
+    max-width: 14rem;
+    margin: 0.25rem 0 0 1.6rem;
+}
+
+.inetd .inetd-badge {
+    display: inline-block;
+    margin-left: 0.25rem;
+    padding: 0 0.4rem;
+    font-size: 11px;
+    line-height: 1.7;
+    color: #50575e;
+    background: #f0f0f1;
+    border-radius: 3px;
+}
+
+.inetd .inetd-areas th {
+    width: 12rem;
+}
+
+.inetd .inetd-inline {
+    margin-right: 1rem;
+}
+
+.inetd .inetd-inline-form {
+    display: inline;
+}
+
+.inetd .inetd-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    align-items: center;
+    margin: 1em 0;
+}
+
+.inetd .inetd-summary {
+    max-width: 40rem;
+    margin-bottom: 1.5rem;
+}
+
+.inetd .inetd-key summary,
+.inetd .inetd-advanced summary {
+    cursor: pointer;
+}
+
+.inetd .inetd-advanced summary h2 {
+    display: inline;
+}
+
+.inetd [hidden] {
+    display: none !important;
+}

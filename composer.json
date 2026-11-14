@@ -1,15 +1,11 @@
 {
     "name": "internetdata/wordpress-plugin",
-    "description": "The official InternetData plugin for WordPress.",
+    "description": "InternetData's WordPress plugin: block by country or from VPNs, proxies, Tor and hosting networks, and send visitors on by their country.",
     "type": "wordpress-plugin",
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "internetdata/internetdata": "*"
-    },
-    "replace": {
-        "symfony/polyfill-php80": "*",
-        "symfony/polyfill-php82": "*"
+        "internetdata/internetdata": "^2.10"
     },
     "require-dev": {
         "phpunit/phpunit": "^11.5 || ^12.0 || ^13.0"
@@ -25,5 +21,9 @@
             "php": "8.2.99"
         },
         "platform-check": false
+    },
+    "replace": {
+        "symfony/polyfill-php80": "*",
+        "symfony/polyfill-php82": "*"
     }
 }

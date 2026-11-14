@@ -37,7 +37,7 @@ grep -q "^Stable tag: ${version}$" readme.txt ||
     { echo "readme.txt's Stable tag is not ${version}, the plugin's Version:" >&2; exit 1; }
 
 # PHP-Scoper, pinned by checksum and kept between builds.
-cache="${XDG_CACHE_HOME:-${HOME}/.cache}/vpndetection-wordpress"
+cache="${XDG_CACHE_HOME:-${HOME}/.cache}/internetdata-wordpress"
 scoper="${cache}/php-scoper-${SCOPER_VERSION}.phar"
 mkdir -p "$cache"
 if ! echo "${SCOPER_SHA256}  ${scoper}" | sha256sum -c --quiet > /dev/null 2>&1 ; then
