@@ -2,6 +2,12 @@
 
 What each release changed for you, newest first. Each line is a commit's summary, linked to its full description and diff.
 
+## 1.0.2 - 2026-11-16
+
+### Fixes
+
+- Show the plan's name as the account serves it ([`069fc88`](https://github.com/internetdata/wordpress-plugin/commit/069fc886307fadd7fc9b8b8ed1552488599169df))
+
 ## 1.0.1 - 2026-11-14
 
 ### Fixes
