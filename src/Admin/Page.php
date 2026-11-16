@@ -243,7 +243,7 @@ final class Page
                 esc_html(sprintf(
                     /* translators: %s: the plan's name, such as "Unlimited" or "Starter". */
                     __('Connected, on the %s plan.', 'internetdata'),
-                    $free ? __('Unlimited', 'internetdata') : ucfirst($account->plan->key),
+                    $account->plan->name,
                 )),
                 esc_html($free
                     ? sprintf(
@@ -725,7 +725,9 @@ final class Page
             return null;
         }
         $cached = get_transient(self::ACCOUNT_CACHE);
-        if (is_array($cached) && ($cached['key'] ?? '') === hash('sha256', $key) && $cached['account'] instanceof Entitlement) {
+        // isset: an account an older release cached has no plan name, so it is read again.
+        if (is_array($cached) && ($cached['key'] ?? '') === hash('sha256', $key) && $cached['account'] instanceof Entitlement
+            && isset($cached['account']->plan->name)) {
             return $cached['account'];
         }
         try {

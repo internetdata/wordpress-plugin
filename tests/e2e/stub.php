@@ -57,7 +57,7 @@ if ($path === '/api/v1/entitlement') {
     reply(200, [
         'org_id' => '85bb51e4-2eb6-4a31-8e4d-02ba8b98fe61',
         'apikey' => ['id' => '0ab424cc-7619-4dad-b027-afacdc2cedb0', 'expires' => null, 'allowed_cidrs' => []],
-        'plan' => ['key' => $free ? 'free' : 'max', 'tier' => $free ? 'free' : 'max'],
+        'plan' => ['key' => $free ? 'free' : 'max', 'name' => $free ? 'Unlimited' : 'Max', 'tier' => $free ? 'free' : 'max'],
         'usage' => [
             'requests' => $free ? 12 : 1240,
             'quota' => $free ? 100 : 5000000,
