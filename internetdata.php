@@ -3,7 +3,7 @@
  * Plugin Name: InternetData
  * Plugin URI: https://docs.internetdata.io/integrations/wordpress
  * Description: Block, hold or flag sign-ins, sign-ups, comments, contact forms, WooCommerce orders and pages by country or from VPNs, proxies, Tor and hosting networks, and send visitors on by their country.
- * Version: 1.0.2
+ * Version: 1.0.3
  * Requires at least: 6.4
  * Requires PHP: 8.2
  * Author: InternetData
@@ -19,7 +19,7 @@ declare(strict_types=1);
 
 defined('ABSPATH') || exit;
 
-const INTERNETDATA_VERSION = '1.0.2';
+const INTERNETDATA_VERSION = '1.0.3';
 const INTERNETDATA_FILE = __FILE__;
 define('INTERNETDATA_DIR', plugin_dir_path(__FILE__));
 
