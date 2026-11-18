@@ -339,16 +339,16 @@
         },
         {
             "name": "internetdata/internetdata",
-            "version": "v2.13.0",
+            "version": "v2.13.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/internetdata/sdk-php.git",
-                "reference": "f62f44c24e6da046696b4d8f9c6af99ac1bbd989"
+                "reference": "bf2d546dd72fd25e0d41eee61f084e57960751d9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/internetdata/sdk-php/zipball/f62f44c24e6da046696b4d8f9c6af99ac1bbd989",
-                "reference": "f62f44c24e6da046696b4d8f9c6af99ac1bbd989",
+                "url": "https://api.github.com/repos/internetdata/sdk-php/zipball/bf2d546dd72fd25e0d41eee61f084e57960751d9",
+                "reference": "bf2d546dd72fd25e0d41eee61f084e57960751d9",
                 "shasum": ""
             },
             "require": {
@@ -402,7 +402,7 @@
                 "issues": "https://github.com/internetdata/sdk-php/issues",
                 "source": "https://github.com/internetdata/sdk-php"
             },
-            "time": "2026-11-17T06:29:06+00:00"
+            "time": "2026-11-18T06:30:11+00:00"
         },
         {
             "name": "psr/http-client",
