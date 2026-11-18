@@ -2,6 +2,12 @@
 
 What each release changed for you, newest first. Each line is a commit's summary, linked to its full description and diff.
 
+## 1.0.4 - 2026-11-18
+
+### Fixes
+
+- Take SDK 2.13.1 ([`65a229c`](https://github.com/internetdata/wordpress-plugin/commit/65a229ceff4e061fe098efb65aa1c135cb618fe1))
+
 ## 1.0.3 - 2026-11-17
 
 ### Fixes
