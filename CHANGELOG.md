@@ -2,6 +2,12 @@
 
 What each release changed for you, newest first. Each line is a commit's summary, linked to its full description and diff.
 
+## 1.0.6 - 2026-11-20
+
+### Fixes
+
+- Say when the overage cap holds signals back ([`75111f7`](https://github.com/internetdata/wordpress-plugin/commit/75111f71f7cc9fe79877bba71fa882b7d593d73e))
+
 ## 1.0.5 - 2026-11-20
 
 ### Fixes

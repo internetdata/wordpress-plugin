@@ -4,7 +4,7 @@ Tags: block countries, geo redirect, geolocation, vpn, woocommerce
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 8.2
-Stable tag: 1.0.5
+Stable tag: 1.0.6
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
@@ -114,6 +114,9 @@ It sends visitors' IP addresses to InternetData for the areas you turn on, keeps
 3. A held WooCommerce order and its note.
 
 == Changelog ==
+
+= 1.0.6 =
+* When your organization reaches the overage cap it set, the admin screens say so, and that ticked signals block nobody until the billing period ends or the cap is raised.
 
 = 1.0.5 =
 * The settings screen and its signal badges say a connected free account tries every signal during its trial.
