@@ -14,8 +14,8 @@ defined('ABSPATH') || exit;
  * Each signal is one member of a lookup answer, and which plans answer it is the API's to say. On
  * Unlimited, the free plan, with a key or without one, a lookup carries Tor, relays, where the address
  * is to the country and the network it belongs to; every paid plan answers every field, VPNs, proxies
- * and hosting among them, with the detail behind each. A key on the free plan also gets a daily trial:
- * its account's first 100 lookups each UTC day answer as a paid plan's, and the rest as Unlimited's,
+ * and hosting among them, with the detail behind each. A key on the free plan also gets a trial: its
+ * account's lookups answer as a paid plan's while it lasts, and the rest as Unlimited's,
  * which `trial_expired` says.
  */
 final class Signals
@@ -75,7 +75,7 @@ final class Signals
             'resproxy' => __('Home connections rented out as proxies.', 'internetdata'),
             'mobproxy' => __('Phone connections rented out as proxies. Carriers share these addresses with ordinary customers.', 'internetdata'),
             'dcproxy' => __('Proxies running in datacenters.', 'internetdata'),
-            'hosting' => __('Servers at hosting and cloud providers, where bots and scripts run. Without a paid plan or the daily trial, judged by the network an address belongs to.', 'internetdata'),
+            'hosting' => __('Servers at hosting and cloud providers, where bots and scripts run. Without a paid plan or the trial, judged by the network an address belongs to.', 'internetdata'),
             'relay' => __('iCloud Private Relay and company web gateways. Mostly ordinary people.', 'internetdata'),
             'country' => __('Where the visitor\'s address is, whatever their browser says. Works on every plan.', 'internetdata'),
             default => '',
@@ -155,7 +155,7 @@ final class Signals
 
     /**
      * Whether a plan tier answers a signal on every lookup; null tier is a client with no key, and
-     * `free` the free plan's, which answers every signal only for its account's first 100 lookups a day.
+     * `free` the free plan's, which answers every signal only while its account's trial lasts.
      */
     public static function served(string $signal, ?string $tier): bool
     {

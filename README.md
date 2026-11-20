@@ -17,7 +17,7 @@ Open Settings > InternetData and click Connect with InternetData. A tab opens on
 define('INTERNETDATA_API_KEY', 'your-api-key');
 ```
 
-InternetData's free plan, Unlimited, needs no account and has no cap: it runs country rules, geo redirects and the checkout's billing country check, and checks for Tor, privacy relays and hosting, judged by the network an address belongs to. Connect a free account and its first 100 checks each day try every signal, VPNs and public, residential, mobile and datacenter proxies included; every paid plan checks every signal on every visit, with how often each proxy was seen.
+InternetData's free plan, Unlimited, needs no account and has no cap: it runs country rules, geo redirects and the checkout's billing country check, and checks for Tor, privacy relays and hosting, judged by the network an address belongs to. Connect a free account to try every signal, VPNs and public, residential, mobile and datacenter proxies included; every paid plan checks every signal on every visit, with how often each proxy was seen.
 
 Nothing is checked until you turn an area on.
 
@@ -37,7 +37,7 @@ Start an area on Log only: the Activity tab then lists who it would have caught,
 
 ## What to block
 
-Countries, VPNs, Tor, public proxies, residential proxies, mobile proxies, datacenter proxies, hosting and cloud servers, and privacy relays such as iCloud Private Relay. Every area blocks on the same list unless you give it one of its own, so comments can catch hosting servers while sign-in leaves them alone. A privacy relay counts as a relay alone, even where it runs on a hosting network, so iCloud Private Relay visitors aren't refused as hosting. The settings mark each signal your plan doesn't answer, since an absent answer can never match: VPNs and proxies need a paid plan or a free account's daily trial, and hosting without one is judged by the type of network the address belongs to.
+Countries, VPNs, Tor, public proxies, residential proxies, mobile proxies, datacenter proxies, hosting and cloud servers, and privacy relays such as iCloud Private Relay. Every area blocks on the same list unless you give it one of its own, so comments can catch hosting servers while sign-in leaves them alone. A privacy relay counts as a relay alone, even where it runs on a hosting network, so iCloud Private Relay visitors aren't refused as hosting. The settings mark each signal your plan doesn't answer, since an absent answer can never match: VPNs and proxies need a paid plan or a free account's trial, and hosting without one is judged by the type of network the address belongs to.
 
 Countries are listed by their two-letter codes, and either blocked or the only ones allowed, so `DE, AT, CH` with Allow only these countries refuses everyone else. A visitor whose address has no known country is let through. A visitor refused for their country alone is told the site isn't available there, rather than to turn off a VPN.
 

@@ -290,7 +290,7 @@ final class Page
             echo '<p>' . esc_html__('This site uses the API key set as INTERNETDATA_API_KEY in wp-config.php.', 'internetdata') . '</p></div>';
             return;
         }
-        echo '<p>' . esc_html__('Connect an InternetData account to try every signal, VPNs and proxies included: its first 100 checks each day answer in full. Paid plans check every signal on every visit.', 'internetdata') . '</p>';
+        echo '<p>' . esc_html__('Connect an InternetData account to try every signal, VPNs and proxies included. Paid plans check every signal on every visit.', 'internetdata') . '</p>';
         echo '<p class="description">' . esc_html__('Without an account the plugin checks countries, Tor, privacy relays and hosting, judged by the network an address belongs to, with no cap, and runs your country rules, geo redirects and the checkout\'s billing country check.', 'internetdata') . '</p>';
         printf(
             '<p><button type="button" class="button button-primary" id="inetd-connect">%s</button> <span id="inetd-connect-status" aria-live="polite"></span></p>',
@@ -394,7 +394,7 @@ final class Page
         echo '<h2>' . esc_html__('What to block', 'internetdata') . '</h2>';
         echo '<p class="description">' . esc_html__('Every area below acts on these, unless you give it signals of its own.', 'internetdata') . '</p>';
         if (array_filter(Signals::keys(), static fn (string $s): bool => !Signals::served($s, $tier)) !== []) {
-            echo '<p class="description">' . esc_html__('A signal marked "Paid plan or daily trial" is answered on every paid plan, and on a free account\'s first 100 checks each day. Otherwise it blocks nobody.', 'internetdata') . '</p>';
+            echo '<p class="description">' . esc_html__('A signal marked "Paid plan or trial" is answered on every paid plan, and on a free account during its trial. Otherwise it blocks nobody.', 'internetdata') . '</p>';
         }
         $gaps = $this->plugin->diagnostics->recent()['gaps']['signals'] ?? [];
         if (is_array($gaps) && $gaps !== []) {
@@ -417,7 +417,7 @@ final class Page
         foreach (Signals::keys() as $signal) {
             $badge = '';
             if (!Signals::served($signal, $tier)) {
-                $badge = __('Paid plan or daily trial', 'internetdata');
+                $badge = __('Paid plan or trial', 'internetdata');
             }
             $list = '';
             if ($signal === 'country' && $countries !== null) {

@@ -15,7 +15,7 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 
 const [address, order, shots] = process.argv.slice(2);
 const site = 'http://wp';
-const paidBadge = 'Paid plan or daily trial';
+const paidBadge = 'Paid plan or trial';
 const failures = [];
 
 function check(name, ok) {

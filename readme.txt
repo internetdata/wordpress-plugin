@@ -48,7 +48,7 @@ Countries, VPNs, Tor, public proxies, residential proxies, mobile proxies, datac
 = 🎁 Free to start =
 
 * No account: InternetData's free plan, Unlimited, runs your country rules, geo redirects and the billing country check, and checks for Tor, privacy relays and hosting, judged by the network an address belongs to, on every visit, with no cap.
-* Free account: its first 100 checks each day try every signal, VPNs and public, residential, mobile and datacenter proxies included.
+* Free account: try every signal, VPNs and public, residential, mobile and datacenter proxies included.
 * Paid plan: every signal on every visit, with how often each proxy was seen.
 
 Connecting takes one click: sign in on internetdata.io in the tab that opens and pick a key.
@@ -81,7 +81,7 @@ Not through the sign-in area while "Administrators can always sign in" is ticked
 
 = How do I block or allow countries? =
 
-Tick Countries under What to block, choose Block these countries or Allow only these countries, and list them by their two-letter codes, such as DE, AT, CH. It reads where the visitor's address is rather than where their browser says they are. VPNs and proxies are how visitors get round a country rule, so it works best beside them, which needs a paid plan or a free account's daily trial.
+Tick Countries under What to block, choose Block these countries or Allow only these countries, and list them by their two-letter codes, such as DE, AT, CH. It reads where the visitor's address is rather than where their browser says they are. VPNs and proxies are how visitors get round a country rule, so it works best beside them, which needs a paid plan or a free account's trial.
 
 = How do geo redirects work? =
 
