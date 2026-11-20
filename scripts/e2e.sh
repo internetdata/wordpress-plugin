@@ -338,8 +338,14 @@ wp option update woocommerce_cod_settings '{"enabled":"yes","title":"Cash on del
 wp option update woocommerce_coming_soon no > /dev/null
 product="$(wp wc product create --name=Widget --regular_price=10 --user=admin --porcelain)"
 # A block checkout through the Store API, which keeps the cart by its Cart-Token header, billed to a
-# country (DE unless named).
+# country (DE unless named) in the state that holds postcode 10115 there: WooCommerce 11.3.1 refuses
+# a billing state that does not fit its country, and read one sent without a state as CA.
 function checkout() {
+    local state
+    case "${2:-DE}" in
+        DE) state=DE-BE ;;
+        US) state=NY ;;
+    esac
     docker exec "${run}-cli" sh -c "
         headers=\$(curl -sS -D - -o /dev/null -H 'X-Forwarded-For: $1' http://wp/wp-json/wc/store/v1/cart)
         nonce=\$(echo \"\$headers\" | sed -n 's/^[Nn]once: //p' | tr -d '\\r')
@@ -347,7 +353,7 @@ function checkout() {
         curl -sS -o /dev/null -H \"Nonce: \$nonce\" -H \"Cart-Token: \$token\" -H 'X-Forwarded-For: $1' \\
             -H 'Content-Type: application/json' -d '{\"id\":${product},\"quantity\":1}' http://wp/wp-json/wc/store/v1/cart/add-item
         curl -sS -i -H \"Nonce: \$nonce\" -H \"Cart-Token: \$token\" -H 'X-Forwarded-For: $1' -H 'Content-Type: application/json' \\
-            -d '{\"billing_address\":{\"first_name\":\"A\",\"last_name\":\"B\",\"address_1\":\"1 Main St\",\"city\":\"Springfield\",\"postcode\":\"10115\",\"country\":\"${2:-DE}\",\"email\":\"buyer@example.com\"},\"payment_method\":\"cod\"}' \\
+            -d '{\"billing_address\":{\"first_name\":\"A\",\"last_name\":\"B\",\"address_1\":\"1 Main St\",\"city\":\"Springfield\",\"postcode\":\"10115\",\"state\":\"${state}\",\"country\":\"${2:-DE}\",\"email\":\"buyer@example.com\"},\"payment_method\":\"cod\"}' \\
             http://wp/wp-json/wc/store/v1/checkout"
 }
 function order_id() {
