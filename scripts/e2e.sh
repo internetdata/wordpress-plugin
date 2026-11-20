@@ -395,10 +395,16 @@ settings "{\"signals\":[\"vpn\"],\"areas\":$(areas login block)}"
 out="$(visit "$VPN" http://wp/wp-login.php -d 'log=x&pwd=y&wp-submit=Log+In')"
 check_not "a free-plan key past its daily trial cannot block VPNs" "$out" "$MESSAGE"
 check "  ... and the settings say so" "$(wp option get internetdata_diagnostics --format=json)" '"gaps":\{"signals":\["vpn"\]'
+wp option update internetdata_api_key cap-reached > /dev/null
+settings "{\"signals\":[\"vpn\"],\"areas\":$(areas login block)}"
+out="$(visit "$VPN" http://wp/wp-login.php -d 'log=x&pwd=y&wp-submit=Log+In')"
+check_not "a paid key past its overage cap cannot block VPNs" "$out" "$MESSAGE"
+check "  ... and the settings say the cap is why" "$(wp option get internetdata_diagnostics --format=json)" '"cap":\{"reached":true'
 wp option update internetdata_api_key max-key > /dev/null
 settings "{\"signals\":[\"resproxy\"],\"areas\":$(areas login block)}"
 out="$(visit "$RESPROXY" http://wp/wp-login.php -d 'log=x&pwd=y&wp-submit=Log+In')"
 check "a paid key blocks residential proxies" "$out" "$MESSAGE"
+check_not "  ... and the cap's note is gone" "$(wp option get internetdata_diagnostics --format=json)" '"cap":'
 
 echo "==> failing open and closed"
 wp option update internetdata_api_key spent-key > /dev/null

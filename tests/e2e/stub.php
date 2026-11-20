@@ -1,8 +1,9 @@
 <?php
 
 // A stand-in for the InternetData API, answering the addresses the e2e scenarios use in the shapes the
-// real API answers them, by plan: no key (Unlimited's fields), a free-plan key within its daily trial
-// (`free-key`), one past it (`trial-spent`), or any other key as a paid one.
+// real API answers them, by plan: no key (Unlimited's fields), a free-plan key within its trial
+// (`free-key`), one past it (`trial-spent`), a paid key past its organization's overage cap
+// (`cap-reached`), or any other key as a paid one.
 // Every request is appended to /tmp/stub.log, so a scenario can count lookups. Run with `php -S`.
 
 declare(strict_types=1);
@@ -166,4 +167,7 @@ if ($key === 'free-key') {
 if ($key === 'trial-spent') {
     reply(200, $unlimited + ['trial_expired' => true]);
 }
-reply(200, $full);
+if ($key === 'cap-reached') {
+    reply(200, $unlimited + ['cap_reached' => true]);
+}
+reply(200, $full + ['cap_reached' => false]);

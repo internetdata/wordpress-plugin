@@ -41,6 +41,19 @@ final class Diagnostics
     }
 
     /**
+     * Whether the visitor's answer came past the organization's overage cap, which answers with the free
+     * plan's fields alone until the billing period ends or the cap is raised.
+     */
+    public function capReached(bool $reached): void
+    {
+        if ($reached) {
+            $this->note('cap', ['reached' => true]);
+        } elseif (isset($this->recent()['cap'])) {
+            $this->clear('cap');
+        }
+    }
+
+    /**
      * A visitor whose address resolved to a private one: a proxy in front of the site that the
      * Visitor address setting does not know.
      */

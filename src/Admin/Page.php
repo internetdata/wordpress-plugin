@@ -168,6 +168,12 @@ final class Page
             };
             printf('<div class="notice notice-error"><p>%s</p></div>', esc_html($message));
         }
+        if ($where && isset($this->plugin->diagnostics->recent()['cap'])) {
+            printf(
+                '<div class="notice notice-warning"><p>%s</p></div>',
+                esc_html__('InternetData: your organization has reached the overage cap it set, so visitors are checked with the free plan\'s signals until the billing period ends or the cap is raised in Billing.', 'internetdata'),
+            );
+        }
         if ($screen !== null && $screen->id === 'plugins' && get_option(self::SET_UP) !== '1') {
             printf(
                 '<div class="notice notice-info"><p>%s <a href="%s">%s</a></p></div>',
@@ -398,9 +404,13 @@ final class Page
         }
         $gaps = $this->plugin->diagnostics->recent()['gaps']['signals'] ?? [];
         if (is_array($gaps) && $gaps !== []) {
+            $capped = isset($this->plugin->diagnostics->recent()['cap']);
             printf('<div class="notice notice-warning inline"><p>%s</p></div>', esc_html(sprintf(
-                /* translators: %s: signals, such as "Residential proxies, Hosting and cloud servers". */
-                __('Ticked, but not answered on this site\'s plan, so they block nobody: %s.', 'internetdata'),
+                $capped
+                    /* translators: %s: signals, such as "Residential proxies, Hosting and cloud servers". */
+                    ? __('Ticked, but not answered past the overage cap, so they block nobody: %s.', 'internetdata')
+                    /* translators: %s: signals, such as "Residential proxies, Hosting and cloud servers". */
+                    : __('Ticked, but not answered on this site\'s plan, so they block nobody: %s.', 'internetdata'),
                 implode(', ', array_map([Signals::class, 'label'], $gaps)),
             )));
         }

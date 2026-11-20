@@ -271,6 +271,7 @@ final class Detector
         if ($failed !== null && $failed < time() - 5 * MINUTE_IN_SECONDS) {
             $this->diagnostics->clear('lookup');
         }
+        $this->diagnostics->capReached($lookup->result->capReached === true);
         $asn = $lookup->result->asn?->asn ?? 0;
         return new Visit($ip, $lookup->result, allowed: $allowlist->coversAsn($asn));
     }
