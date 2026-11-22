@@ -85,8 +85,9 @@ $location = $country('DE', 'Germany', 'EU', 'Europe', 'Europe/Berlin');
 $asn = ['asn' => 3320, 'name' => 'Deutsche Telekom AG', 'domain' => 'telekom.de', 'type' => 'isp', 'prefix' => $ip . '/32'];
 $company = ['name' => 'Deutsche Telekom AG', 'domain' => 'telekom.de'];
 $free = [
-    'is_tor' => false, 'is_relay' => false, 'is_anycast' => false, 'is_carrier' => false, 'is_satellite' => false,
-    'is_ssh' => false, 'is_smtp' => false, 'is_web' => false, 'is_dns_resolver' => false, 'is_bittorrent' => false,
+    'is_bot' => false, 'is_tor' => false, 'is_relay' => false, 'is_anycast' => false, 'is_carrier' => false,
+    'is_satellite' => false, 'is_ssh' => false, 'is_smtp' => false, 'is_web' => false, 'is_dns_resolver' => false,
+    'is_bittorrent' => false,
 ];
 $paid = [
     'is_vpn' => false, 'is_resproxy' => false, 'is_dcproxy' => false, 'is_mobproxy' => false, 'is_pubproxy' => false,
@@ -146,7 +147,8 @@ switch ($ip) {
         break;
 }
 $unlimited = ['ip' => $ip, 'is_bogon' => false] + $free + $details + [
-    'location' => $location, 'asn' => $asn, 'company' => $company, 'hostname' => '',
+    'location' => $location, 'asn' => $asn + ['country' => $location['country'], 'rpki_status' => 'valid'],
+    'company' => $company, 'hostname' => '',
     'abuse' => ['email' => 'abuse@' . $asn['domain']],
 ];
 $full = ['ip' => $ip, 'is_bogon' => false] + $paid + $free + $paidDetails + $details + [
