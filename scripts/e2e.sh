@@ -195,7 +195,7 @@ wp option update internetdata_api_key free-key > /dev/null
 visit "$CLEAN" -c /tmp/inetd-admin http://wp/wp-login.php -d 'log=admin&pwd=correct-horse&wp-submit=Log+In' > /dev/null
 out="$(visit "$CLEAN" -b /tmp/inetd-admin 'http://wp/wp-admin/options-general.php?page=internetdata')"
 check "a free-plan key's account card names the Unlimited plan" "$out" "Connected, on the Unlimited plan\\."
-check "  ... and counts its daily trial, today's checks with every signal" "$out" "of today&#039;s 100 checks with every signal used"
+check "  ... and counts its monthly trial, the checks with every signal until the window ends" "$out" "12 of 100 checks with every signal used this month, which resets on "
 check "  ... and offers every signal for a paid plan" "$out" "Upgrade for every signal"
 wp option delete internetdata_api_key > /dev/null
 
