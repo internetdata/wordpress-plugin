@@ -2,6 +2,13 @@
 
 What each release changed for you, newest first. Each line is a commit's summary, linked to its full description and diff.
 
+## 1.0.8 - 2026-11-22
+
+### Fixes
+
+- Count a free key's trial by the month, with the day it resets ([`de1ca11`](https://github.com/internetdata/wordpress-plugin/commit/de1ca11dd113025ddc7275f441b36616bfeb55a7))
+- Take SDK 2.15.0 ([`a568ae1`](https://github.com/internetdata/wordpress-plugin/commit/a568ae1c4e1cb26d19905c084139ec3231d7832d))
+
 ## 1.0.7 - 2026-11-21
 
 ### Fixes

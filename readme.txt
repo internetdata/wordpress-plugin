@@ -4,7 +4,7 @@ Tags: block countries, geo redirect, geolocation, vpn, woocommerce
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 8.2
-Stable tag: 1.0.7
+Stable tag: 1.0.8
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
@@ -114,6 +114,10 @@ It sends visitors' IP addresses to InternetData for the areas you turn on, keeps
 3. A held WooCommerce order and its note.
 
 == Changelog ==
+
+= 1.0.8 =
+* On a free key, the account card counts this month's checks with every signal, and the day the count resets.
+* Built on the newest InternetData PHP library.
 
 = 1.0.7 =
 * Built on the newest InternetData PHP library.
