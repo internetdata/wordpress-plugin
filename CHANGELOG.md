@@ -2,6 +2,12 @@
 
 What each release changed for you, newest first. Each line is a commit's summary, linked to its full description and diff.
 
+## 1.1.1 - 2026-11-24
+
+### Fixes
+
+- Count a free key's trial to its end, and say once it has ended ([`121bcc9`](https://github.com/internetdata/wordpress-plugin/commit/121bcc97d2ae47e6fb912a7ae02b114ee5cc802e))
+
 ## 1.1.0 - 2026-11-24
 
 ### Features
