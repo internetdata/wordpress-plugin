@@ -2,6 +2,16 @@
 
 What each release changed for you, newest first. Each line is a commit's summary, linked to its full description and diff.
 
+## 1.1.0 - 2026-11-24
+
+### Features
+
+- Never refuse a vouched-for search engine crawler from your pages ([`0e5547b`](https://github.com/internetdata/wordpress-plugin/commit/0e5547be06b44930259a66ff8886521a06d5f6cf))
+
+### Fixes
+
+- Take SDK 2.16.0 ([`b865e08`](https://github.com/internetdata/wordpress-plugin/commit/b865e088c4605cbf6a7ecdcbbbceceb91a4ec10c))
+
 ## 1.0.8 - 2026-11-22
 
 ### Fixes
