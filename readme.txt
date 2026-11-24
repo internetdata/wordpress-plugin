@@ -58,7 +58,7 @@ Connecting takes one click: sign in on internetdata.io in the tab that opens and
 * It checks only the areas you turn on, and asks about each address at most once every six hours.
 * If InternetData can't be reached within 2.5 seconds, the visitor is let through. You can choose to refuse them instead.
 * It works with page caches. A cached page is checked, and sent on, from the visitor's browser, or you can keep protected pages out of the cache so the server checks every visit. A refusal is never cached.
-* Google's, Bing's, Apple's and DuckDuckGo's crawlers are never refused from your pages or sent anywhere by a geo redirect.
+* Google's, Bing's, Apple's and DuckDuckGo's crawlers are never refused from your pages or sent anywhere by a geo redirect. On a paid plan or the trial, neither is any other search engine's crawler whose operator vouches for its address.
 * It finds the visitor's real address behind Cloudflare, a load balancer or another proxy, and believes a forwarding header only from the proxy that writes it.
 * It sends its requests through WordPress's own HTTP API, so your proxy settings and debugging tools see them.
 

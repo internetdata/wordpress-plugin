@@ -98,7 +98,12 @@ $paidDetails = [
     'vpn' => (object) [], 'resproxy' => (object) [], 'dcproxy' => (object) [], 'mobproxy' => (object) [],
     'pubproxy' => (object) [], 'hosting' => (object) [], 'cdn' => (object) [], 'carrier' => (object) [],
     'satellite' => (object) [], 'ssh' => (object) [], 'smtp' => (object) [], 'web' => [],
-    'dns_resolver' => (object) [], 'bittorrent' => (object) [],
+    'dns_resolver' => (object) [], 'bittorrent' => (object) [], 'bot' => (object) [],
+];
+$bot = fn (string $provider, string $name, string $agent, array $categories, string $by): array => [
+    'provider' => $provider, 'provider_name' => $name, 'agents' => [$agent], 'categories' => $categories,
+    'verified' => true, 'identity' => 'verified', 'verified_by' => $by, 'confidence' => 'high',
+    'first_seen' => '2026-11-15', 'last_seen' => '2026-11-22',
 ];
 $class = fn (string $provider): array => [
     'provider' => $provider, 'provider_name' => ucfirst($provider), 'confidence' => 'high', 'last_seen' => '2026-11-13',
@@ -129,11 +134,20 @@ switch ($ip) {
         $paidDetails['resproxy'] = $proxy(2);
         break;
     case '66.249.66.1':
-        $paid['is_hosting'] = true;
+        $paid['is_hosting'] = $free['is_bot'] = true;
         $paidDetails['hosting'] = $class('gcp');
+        $paidDetails['bot'] = $bot('google', 'Google', 'Googlebot', ['ai_search', 'other', 'search_engine'], 'list');
         $location = $country('US', 'United States', 'NA', 'North America', 'America/Chicago');
         $asn = ['asn' => 15169, 'name' => 'Google LLC', 'domain' => 'google.com', 'type' => 'hosting', 'prefix' => '66.249.64.0/19'];
         $company = ['name' => 'Google LLC', 'domain' => 'google.com'];
+        break;
+    case '5.255.253.1':
+        // A search engine's crawler outside the plugin's published ranges, which only a paid answer vouches for.
+        $free['is_bot'] = true;
+        $paidDetails['bot'] = $bot('yandex', 'Yandex', 'YandexBot', ['search_engine'], 'rdns');
+        $location = $country('RU', 'Russia', 'EU', 'Europe', 'Europe/Moscow');
+        $asn = ['asn' => 13238, 'name' => 'YANDEX LLC', 'domain' => 'yandex.ru', 'type' => 'business', 'prefix' => '5.255.192.0/18'];
+        $company = ['name' => 'YANDEX LLC', 'domain' => 'yandex.ru'];
         break;
     case '90.0.0.1':
         $location = $country('FR', 'France', 'EU', 'Europe', 'Europe/Paris');

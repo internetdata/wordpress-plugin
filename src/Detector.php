@@ -100,15 +100,16 @@ final class Detector
      * @param array<string, string> $context What the visitor was doing, for the activity log.
      * @param string $billing At checkout, the order's billing country, which the visitor's own must
      *     match while the site asks for that.
+     * @param (callable(Result): bool)|null $passes Whether an answer lets the visitor through whatever it matches.
      */
-    public function judge(string $area, array $context = [], string $billing = ''): ?Verdict
+    public function judge(string $area, array $context = [], string $billing = '', ?callable $passes = null): ?Verdict
     {
         $billing = $area === 'checkout' && $this->settings->get('checkout_billing') ? strtoupper(trim($billing)) : '';
         $key = $area . "\0" . $billing;
         if (array_key_exists($key, $this->judged)) {
             return $this->judged[$key];
         }
-        return $this->judged[$key] = $this->decide($area, $context, $billing);
+        return $this->judged[$key] = $this->decide($area, $context, $billing, $passes);
     }
 
     /**
@@ -118,8 +119,9 @@ final class Detector
      *
      * @param array<string, string> $context
      * @param callable(string): bool $isHere Whether an address is the page being asked for.
+     * @param (callable(Result): bool)|null $passes Whether an answer is never sent anywhere.
      */
-    public function geo(array $context, callable $isHere): ?Verdict
+    public function geo(array $context, callable $isHere, ?callable $passes = null): ?Verdict
     {
         $action = $this->settings->action('pages');
         $rules = $this->settings->geoRedirects();
@@ -128,7 +130,8 @@ final class Detector
         }
         $visit = $this->visit();
         $country = $visit->result?->location->country ?? '';
-        if ($visit->allowed || $visit->result === null || $visit->result->isBogon || $country === '') {
+        if ($visit->allowed || $visit->result === null || $visit->result->isBogon || $country === ''
+            || ($passes !== null && $passes($visit->result))) {
             return null;
         }
         foreach ($rules as $rule) {
@@ -144,8 +147,11 @@ final class Detector
         return null;
     }
 
-    /** @param array<string, string> $context */
-    private function decide(string $area, array $context, string $billing): ?Verdict
+    /**
+     * @param array<string, string> $context
+     * @param (callable(Result): bool)|null $passes
+     */
+    private function decide(string $area, array $context, string $billing, ?callable $passes): ?Verdict
     {
         $action = $this->settings->action($area);
         $signals = $this->settings->signals($area);
@@ -163,7 +169,7 @@ final class Detector
             return $this->flag(new Verdict($area, $action, ['unavailable'], $visit, $context));
         }
         $result = $visit->result;
-        if ($result === null || $result->isBogon) {
+        if ($result === null || $result->isBogon || ($passes !== null && $passes($result))) {
             return null;
         }
         $matched = $this->matched($area, $signals, $result);

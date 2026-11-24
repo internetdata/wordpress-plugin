@@ -9,6 +9,7 @@ use InternetData\WordPress\Detector;
 use InternetData\WordPress\Ranges;
 use InternetData\WordPress\Request;
 use InternetData\WordPress\Settings;
+use InternetData\WordPress\Vendor\InternetData\Result;
 use InternetData\WordPress\Verdict;
 
 defined('ABSPATH') || exit;
@@ -24,7 +25,8 @@ defined('ABSPATH') || exit;
  * cached either way.
  *
  * Search engines crawl from cloud addresses, which a hosting rule would refuse, so their published
- * crawler addresses are never refused here, nor sent anywhere by a geo redirect.
+ * crawler addresses are never refused here, nor sent anywhere by a geo redirect, and neither is any
+ * search engine's crawler a paid answer or the trial's says its operator vouches for.
  *
  * Geo redirects send a visitor the area lets through to the address its rule names for their
  * country, on the pages the area covers, and only record it while the area logs.
@@ -125,7 +127,17 @@ final class Pages
         if ($this->crawler()) {
             return null;
         }
-        return $this->detector->judge('pages', ['path' => mb_substr($path, 0, 191)]);
+        return $this->detector->judge('pages', ['path' => mb_substr($path, 0, 191)], '', self::vouchedCrawler(...));
+    }
+
+    /**
+     * Whether the answer is a search engine's crawler its operator vouches for. Only a paid answer or
+     * the trial's says whose bot an address is, so without one only the published ranges pass.
+     */
+    public static function vouchedCrawler(Result $result): bool
+    {
+        $bot = $result->bot;
+        return $result->isBot === true && $bot?->verified === true && in_array('search_engine', $bot->categories ?? [], true);
     }
 
     /** The geo redirect for this visitor on this path, which a search engine's crawler never gets. */
@@ -135,7 +147,7 @@ final class Pages
             return null;
         }
         $isHere = fn (string $url): bool => $this->isPage($url, $path);
-        return $this->detector->geo(['path' => mb_substr($path, 0, 191)], $isHere);
+        return $this->detector->geo(['path' => mb_substr($path, 0, 191)], $isHere, self::vouchedCrawler(...));
     }
 
     private function crawler(): bool

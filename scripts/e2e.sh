@@ -45,6 +45,7 @@ VPN=45.83.91.1 # a VPN and hosting, in Sweden
 TOR=185.220.101.1 # Tor and hosting, in Germany
 RESPROXY=5.6.7.8 # a residential proxy seen twice, in Germany
 GOOGLEBOT=66.249.66.1 # Google's crawler, hosting, in the US
+YANDEXBOT=5.255.253.1 # Yandex's crawler, outside the published ranges, in Russia
 CLEAN=81.2.69.142 # a home connection in Germany
 FRENCH=90.0.0.1 # a home connection in France
 AMERICAN=24.48.0.1 # a home connection in the US
@@ -248,6 +249,14 @@ check "and serves a clean one" "$out" "^HTTP/1.1 200"
 check "  ... with the browser check for a cached copy" "$out" "internetdata-check-js"
 out="$(visit "$GOOGLEBOT" http://wp/)"
 check "Googlebot is never refused, though its network is hosting" "$out" "^HTTP/1.1 200"
+# Only a paid answer, or the trial's, says whose bot an address is.
+wp option update internetdata_api_key max-key > /dev/null
+settings "{\"signals\":[\"country\"],\"countries\":\"RU\",\"areas\":$(areas pages block),\"pages_scope\":\"site\"}"
+out="$(visit "$YANDEXBOT" http://wp/)"
+check "a search engine's crawler its operator vouches for is never refused, though its country is" "$out" "^HTTP/1.1 200"
+check "  ... and logged nowhere" "$(wp db query "SELECT COUNT(*) FROM wp_internetdata_activity WHERE ip='${YANDEXBOT}'" --skip-column-names)" "^0$"
+wp option delete internetdata_api_key > /dev/null
+settings "{\"signals\":[\"tor\",\"hosting\"],\"areas\":$(areas pages block),\"pages_scope\":\"site\"}"
 out="$(visit "$TOR" http://wp/wp-json/internetdata/v1/check -H 'Content-Type: application/json' -d '{"path":"/"}')"
 check "the browser check refuses a Tor visitor" "$out" '"blocked":true'
 check "  ... uncached" "$out" "^Cache-Control: no-store, private"
@@ -282,6 +291,10 @@ check "Googlebot is never sent anywhere, though it crawls from the US" "$(visit 
 out="$(visit "$FRENCH" http://wp/wp-json/internetdata/v1/check -H 'Content-Type: application/json' -d '{"path":"/hello-world/"}')"
 check "the browser check sends a cached page's visitor on" "$out" '"redirect":"https:\\/\\/example.fr\\/"'
 check "  ... without refusing them" "$out" '"blocked":false'
+settings "{\"signals\":[],\"areas\":$(areas pages block),\"pages_scope\":\"site\",\"pages_geo\":\"RU https://example.ru/\"}"
+wp option update internetdata_api_key max-key > /dev/null
+check "a search engine's crawler its operator vouches for is never sent anywhere either" "$(visit "$YANDEXBOT" http://wp/hello-world/)" "^HTTP/1.1 200"
+wp option delete internetdata_api_key > /dev/null
 settings "{\"signals\":[\"tor\"],\"areas\":$(areas pages block),\"pages_scope\":\"site\",\"pages_geo\":\"DE https://example.de/\"}"
 check "a visitor the area refuses is refused, not sent on" "$(visit "$TOR" http://wp/hello-world/)" "^HTTP/1.1 403"
 check "  ... while one it lets through is sent" "$(visit "$CLEAN" http://wp/hello-world/)" "^Location: https://example.de/"
