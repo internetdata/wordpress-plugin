@@ -55,16 +55,19 @@ if ($path === '/api/v1/entitlement') {
         reply(401, ['error' => 'invalid API key']);
     }
     $free = $key === 'free-key' || $key === 'trial-spent';
+    // A free key's usage is its trial, which runs once: `free-key` is a day into it, `trial-spent` has
+    // used it all.
+    $day = 86400;
     reply(200, [
         'org_id' => '85bb51e4-2eb6-4a31-8e4d-02ba8b98fe61',
         'apikey' => ['id' => '0ab424cc-7619-4dad-b027-afacdc2cedb0', 'expires' => null, 'allowed_cidrs' => []],
         'plan' => ['key' => $free ? 'free' : 'max', 'name' => $free ? 'Unlimited' : 'Max', 'tier' => $free ? 'free' : 'max'],
         'usage' => [
-            'requests' => $free ? 12 : 1240,
-            'quota' => $free ? 100 : 5000000,
+            'requests' => $key === 'trial-spent' ? 250000 : ($free ? 12 : 1240),
+            'quota' => $free ? 250000 : 5000000,
             'hard_limit' => null,
-            'window_start' => '2026-11-01T00:00:00Z',
-            'window_end' => '2026-12-01T00:00:00Z',
+            'window_start' => $free ? gmdate('Y-m-d\\TH:i:s\\Z', time() - $day) : '2026-11-01T00:00:00Z',
+            'window_end' => $free ? gmdate('Y-m-d\\TH:i:s\\Z', time() + 13 * $day) : '2026-12-01T00:00:00Z',
         ],
     ]);
 }

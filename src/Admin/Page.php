@@ -242,8 +242,28 @@ final class Page
         if ($account instanceof Entitlement) {
             $usage = $account->usage;
             // The free plan, Unlimited, has no allowance to spend: its usage is its trial, the checks answered
-            // with every signal in the window the API names (a UTC calendar month since 2026-11-21).
+            // with every signal. It runs once, from the organization's first keyed lookup to the window's end
+            // or the quota, whichever comes first, and never resets (since 2026-11-24; a UTC month before).
             $free = $account->plan->key === self::FREE_PLAN;
+            $trialEnded = $free && ($usage->requests >= $usage->quota || $usage->windowEnd->getTimestamp() <= time());
+            $ends = wp_date(get_option('date_format'), $usage->windowEnd->getTimestamp());
+            $line = match (true) {
+                $trialEnded => __('Your trial of every signal has ended, so visitors are checked with the free plan\'s signals.', 'internetdata'),
+                $free => sprintf(
+                    /* translators: 1: checks made with every signal; 2: how many get every signal; 3: a date. */
+                    __('%1$s of %2$s checks with every signal used in your trial, which ends on %3$s.', 'internetdata'),
+                    number_format_i18n($usage->requests),
+                    number_format_i18n($usage->quota),
+                    $ends,
+                ),
+                default => sprintf(
+                    /* translators: 1: checks made; 2: checks included; 3: a date. */
+                    __('%1$s of %2$s checks used this period, which resets on %3$s.', 'internetdata'),
+                    number_format_i18n($usage->requests),
+                    number_format_i18n($usage->quota),
+                    $ends,
+                ),
+            };
             printf(
                 '<p><strong>%s</strong> %s</p>',
                 esc_html(sprintf(
@@ -251,21 +271,7 @@ final class Page
                     __('Connected, on the %s plan.', 'internetdata'),
                     $account->plan->name,
                 )),
-                esc_html($free
-                    ? sprintf(
-                        /* translators: 1: checks made with every signal; 2: how many get every signal; 3: a date. */
-                        __('%1$s of %2$s checks with every signal used this month, which resets on %3$s.', 'internetdata'),
-                        number_format_i18n($usage->requests),
-                        number_format_i18n($usage->quota),
-                        wp_date(get_option('date_format'), $usage->windowEnd->getTimestamp()),
-                    )
-                    : sprintf(
-                        /* translators: 1: checks made; 2: checks included; 3: a date. */
-                        __('%1$s of %2$s checks used this period, which resets on %3$s.', 'internetdata'),
-                        number_format_i18n($usage->requests),
-                        number_format_i18n($usage->quota),
-                        wp_date(get_option('date_format'), $usage->windowEnd->getTimestamp()),
-                    )),
+                esc_html($line),
             );
             echo '<div class="inetd-actions">';
             printf(
