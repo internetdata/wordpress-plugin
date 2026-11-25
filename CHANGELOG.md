@@ -2,6 +2,13 @@
 
 What each release changed for you, newest first. Each line is a commit's summary, linked to its full description and diff.
 
+## 1.1.2 - 2026-11-25
+
+### Fixes
+
+- Settings: a paid plan checks every signal, not paid plans ([`e0bbc47`](https://github.com/internetdata/wordpress-plugin/commit/e0bbc47353d068c51879d983de3ad990c125f27e))
+  - The settings page says a paid plan checks every signal on every visit, and answers a signal marked Paid plan or trial: InternetData sells one, at the quota you pick.
+
 ## 1.1.1 - 2026-11-24
 
 ### Fixes
