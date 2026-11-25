@@ -17,7 +17,7 @@ Open Settings > InternetData and click Connect with InternetData. A tab opens on
 define('INTERNETDATA_API_KEY', 'your-api-key');
 ```
 
-InternetData's free plan, Unlimited, needs no account and has no cap: it runs country rules, geo redirects and the checkout's billing country check, and checks for Tor, privacy relays and hosting, judged by the network an address belongs to. Connect a free account to try every signal, VPNs and public, residential, mobile and datacenter proxies included; every paid plan checks every signal on every visit, with how often each proxy was seen.
+InternetData's free plan, Unlimited, needs no account and has no cap: it runs country rules, geo redirects and the checkout's billing country check, and checks for Tor, privacy relays and hosting, judged by the network an address belongs to. Connect a free account to try every signal, VPNs and public, residential, mobile and datacenter proxies included; a paid plan checks every signal on every visit, with how often each proxy was seen.
 
 Nothing is checked until you turn an area on.
 
