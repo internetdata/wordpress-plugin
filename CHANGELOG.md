@@ -2,6 +2,13 @@
 
 What each release changed for you, newest first. Each line is a commit's summary, linked to its full description and diff.
 
+## 1.1.3 - 2026-11-25
+
+### Fixes
+
+- Take SDK 2.17.0 ([`69bcd8b`](https://github.com/internetdata/wordpress-plugin/commit/69bcd8b93827c16e05d25d4fdc107ba352b88292))
+  - Bundles the InternetData PHP SDK 2.17.0. What the plugin checks and shows is unchanged.
+
 ## 1.1.2 - 2026-11-25
 
 ### Fixes
