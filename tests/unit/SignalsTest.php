@@ -15,6 +15,7 @@ use InternetData\WordPress\Vendor\InternetData\Location;
 use InternetData\WordPress\Vendor\InternetData\Middleware\Condition;
 use InternetData\WordPress\Vendor\InternetData\ProxyDetail;
 use InternetData\WordPress\Vendor\InternetData\Result;
+use InternetData\WordPress\Vendor\InternetData\UserAgentVerdict;
 
 final class SignalsTest extends TestCase
 {
@@ -32,6 +33,21 @@ final class SignalsTest extends TestCase
             [['isResproxy' => true, 'resproxy' => ['hits' => ['gte' => 3]]], ['isHosting' => true]],
             Signals::condition(['resproxy', 'hosting'], 3),
         );
+    }
+
+    /** Forged crawlers is the agent's verdict, and an answer with none, the free plan's, lacks it. */
+    public function testForgedCrawlersReadTheAgentsVerdict(): void
+    {
+        $verdict = static fn (?string $v): Result => self::answer([
+            'userAgent' => $v === null ? null : new UserAgentVerdict(agent: 'Googlebot', kind: 'bot', verdict: $v),
+        ]);
+        $condition = Signals::condition(['spoofed'], 1);
+        $this->assertSame([['userAgent' => ['verdict' => 'spoofed']]], $condition);
+        $this->assertTrue(Condition::matches($condition, $verdict('spoofed')));
+        $this->assertFalse(Condition::matches($condition, $verdict('verified')));
+        $this->assertFalse(Condition::matches($condition, $verdict(null)));
+        $this->assertSame(['userAgent'], Condition::missingMembers($condition, $verdict(null)));
+        $this->assertFalse(Signals::served('spoofed', 'free'));
     }
 
     /** The condition is the SDK's own language, so the SDK's matcher decides it. */

@@ -81,6 +81,17 @@ final class Settings
         return $this->get('areas')[$area]['signals'] ?? $this->get('signals');
     }
 
+    /** Whether an area that is on blocks forged crawlers, which needs each lookup to carry the visitor's User-Agent. */
+    public function sendsUserAgent(): bool
+    {
+        foreach (array_keys(self::AREAS) as $area) {
+            if ($this->action($area) !== 'off' && in_array('spoofed', $this->signals($area), true)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public function apiKey(): ?string
     {
         $key = defined('INTERNETDATA_API_KEY') ? (string) constant('INTERNETDATA_API_KEY') : (string) get_option(self::KEY_OPTION, '');
@@ -102,6 +113,9 @@ final class Settings
         }
         if ($verdict !== null && $verdict->signals === ['country']) {
             return __('This site is not available in your country.', 'internetdata');
+        }
+        if ($verdict !== null && $verdict->signals === ['spoofed']) {
+            return __('This site does not accept requests from a client posing as a crawler.', 'internetdata');
         }
         if ($verdict !== null && $verdict->signals === ['billing']) {
             return __('This order cannot be placed from where you are connecting. Contact the store if you think that is wrong.', 'internetdata');

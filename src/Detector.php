@@ -32,6 +32,11 @@ final class Detector
     private ?Client $client = null;
     private ?string $address = null;
     private bool $resolved = false;
+    private ?string $agent = null;
+    private bool $agentRead = false;
+    /** A crawler claimed past its address's bound, whose verdict an earlier claim from there gives. */
+    private bool $pastBound = false;
+    private bool $spoofedBefore = false;
     /** @var array<string, Verdict|null> */
     private array $judged = [];
 
@@ -57,8 +62,14 @@ final class Detector
             timeout: $timeout,
             httpClient: WpHttp::client(),
             cacheStore: new Store(),
-            cacheTtlSeconds: (float) apply_filters('internetdata_cache_ttl', 6 * HOUR_IN_SECONDS),
+            cacheTtlSeconds: (float) self::cacheTtl(),
         ));
+    }
+
+    /** Seconds an answer is kept. */
+    public static function cacheTtl(): int
+    {
+        return (int) apply_filters('internetdata_cache_ttl', 6 * HOUR_IN_SECONDS);
     }
 
     /** The API's origin. A constant points the plugin at another deployment, for testing it. */
@@ -91,6 +102,31 @@ final class Detector
             $this->resolved = true;
         }
         return $this->address;
+    }
+
+    /**
+     * The visitor's User-Agent, which the lookup carries only while an area blocks forged crawlers, the
+     * agent names a crawler, and its address is not past its bound of them.
+     */
+    public function agent(): ?string
+    {
+        if (!$this->agentRead) {
+            $this->agentRead = true;
+            $agent = $this->settings->sendsUserAgent() ? (string) (Request::server()['HTTP_USER_AGENT'] ?? '') : '';
+            if ($agent === '' || !Claims::namesCrawler($agent)) {
+                return null;
+            }
+            $ip = $this->address();
+            [$sent, $this->spoofedBefore] = $ip === null ? [true, false] : $this->claims()->plan($ip, $agent);
+            $this->agent = $sent ? $agent : null;
+            $this->pastBound = !$sent;
+        }
+        return $this->agent;
+    }
+
+    private function claims(): Claims
+    {
+        return new Claims(new Store(), self::cacheTtl());
     }
 
     /**
@@ -155,7 +191,14 @@ final class Detector
     {
         $action = $this->settings->action($area);
         $signals = $this->settings->signals($area);
-        if ($action === 'off' || ($signals === [] && $billing === '')) {
+        // A lookup that carried no agent has no verdict to read: a browser has none to forge, and a crawler
+        // claimed past its address's bound takes the verdict of the address's earlier claims.
+        $forged = false;
+        if ($this->agent() === null) {
+            $forged = $this->pastBound && $this->spoofedBefore && in_array('spoofed', $signals, true);
+            $signals = array_values(array_diff($signals, ['spoofed']));
+        }
+        if ($action === 'off' || ($signals === [] && $billing === '' && !$forged)) {
             return null;
         }
         $visit = $this->visit();
@@ -173,6 +216,10 @@ final class Detector
             return null;
         }
         $matched = $this->matched($area, $signals, $result);
+        // An address its bot's operator vouches for never inherits a verdict.
+        if ($forged && $result->bot?->verified !== true) {
+            $matched[] = 'spoofed';
+        }
         $country = $result->location->country;
         if ($billing !== '' && $country !== '' && $billing !== $country) {
             $matched[] = 'billing';
@@ -259,12 +306,22 @@ final class Detector
             $this->diagnostics->privateAddress($ip);
         }
         // The core's own warnings name the SDK's settings; the plugin says it in its own terms above.
+        // allowBots is what sends the agent: no condition is passed, so it lets no one through itself.
+        $agent = $this->agent();
         $core = new Core(
-            new MiddlewareOptions(client: $this->client(), onMissingField: 'ignore', onWarn: static function (): void {
-            }),
+            new MiddlewareOptions(
+                client: $this->client(),
+                allowBots: $agent !== null,
+                onMissingField: 'ignore',
+                onWarn: static function (): void {
+                },
+            ),
             static fn (): string => $ip,
         );
-        $lookup = $core->evaluate(null);
+        $lookup = $core->evaluate(null, $agent);
+        if ($agent !== null && $lookup?->result !== null) {
+            $this->claims()->note($ip, $agent, $lookup->result->userAgent?->verdict);
+        }
         if ($lookup === null || $lookup->result === null) {
             if ($lookup?->error !== null) {
                 $this->diagnostics->lookupFailed($lookup->error);

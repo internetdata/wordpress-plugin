@@ -47,6 +47,7 @@ RESPROXY=5.6.7.8 # a residential proxy seen twice, in Germany
 GOOGLEBOT=66.249.66.1 # Google's crawler, hosting, in the US
 YANDEXBOT=5.255.253.1 # Yandex's crawler, outside the published ranges, in Russia
 CLEAN=81.2.69.142 # a home connection in Germany
+GOOGLEBOT_AGENT='Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'
 FRENCH=90.0.0.1 # a home connection in France
 AMERICAN=24.48.0.1 # a home connection in the US
 MESSAGE="which this site does not allow"
@@ -258,6 +259,27 @@ settings "{\"signals\":[\"country\"],\"countries\":\"RU\",\"areas\":$(areas page
 out="$(visit "$YANDEXBOT" http://wp/)"
 check "a search engine's crawler its operator vouches for is never refused, though its country is" "$out" "^HTTP/1.1 200"
 check "  ... and logged nowhere" "$(wp db query "SELECT COUNT(*) FROM wp_internetdata_activity WHERE ip='${YANDEXBOT}'" --skip-column-names)" "^0$"
+stub_log="$(docker exec "${run}-stub" cat /tmp/stub.log)"
+check "a lookup carries no user agent while no area blocks forged crawlers" "$stub_log" " /${YANDEXBOT} max-key"
+check_not "  ... none at all" "$stub_log" " ua="
+settings "{\"signals\":[\"spoofed\"],\"areas\":$(areas pages block),\"pages_scope\":\"site\"}"
+out="$(visit "$CLEAN" http://wp/ -A "$GOOGLEBOT_AGENT")"
+check "Forged crawlers refuses a client posing as Googlebot" "$out" "^HTTP/1.1 403"
+check "  ... saying so" "$out" "posing as a crawler"
+check "  ... having sent its user agent" "$(docker exec "${run}-stub" cat /tmp/stub.log)" " /${CLEAN} max-key ua=Mozilla"
+check "  ... where a browser from that address is served" "$(visit "$CLEAN" http://wp/ -A 'Mozilla/5.0 Firefox/145.0')" "^HTTP/1.1 200"
+before="$(lookups "$CLEAN")"
+for i in 1 2 3 4 5; do
+    visit "$CLEAN" http://wp/ -A "Mozilla/5.0 Firefox/14${i}.0" > /dev/null
+done
+check "  ... and no browser's user agent costs a lookup" "$(lookups "$CLEAN")" "^${before}$"
+codes=""
+for i in 1 2 3 4 5 6 7 8; do
+    codes+="$(visit "$CLEAN" http://wp/ -A "${GOOGLEBOT_AGENT} ${i}" -o /dev/null -w '%{http_code}')"
+done
+check "  ... while every crawler the address claims is refused" "$codes" "^(403){8}$"
+check "  ... at most four of them carried by a lookup" \
+    "$(docker exec "${run}-stub" sh -c "grep -c ' /${CLEAN} max-key ua=' /tmp/stub.log || true")" "^4$"
 wp option delete internetdata_api_key > /dev/null
 settings "{\"signals\":[\"tor\",\"hosting\"],\"areas\":$(areas pages block),\"pages_scope\":\"site\"}"
 out="$(visit "$TOR" http://wp/wp-json/internetdata/v1/check -H 'Content-Type: application/json' -d '{"path":"/"}')"

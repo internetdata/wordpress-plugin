@@ -43,7 +43,7 @@ Start each area on Log only and the Activity tab lists who it would have caught,
 
 = 🎯 What it can tell apart =
 
-Countries, VPNs, Tor, public proxies, residential proxies, mobile proxies, datacenter proxies, hosting and cloud servers, and privacy relays such as iCloud Private Relay. Every area uses the same list unless you give it one of its own, so comments can catch hosting servers while sign-in leaves them alone. A privacy relay counts as a relay alone, even where it runs on a hosting network, so iCloud Private Relay visitors aren't refused as hosting.
+Countries, VPNs, Tor, public proxies, residential proxies, mobile proxies, datacenter proxies, hosting and cloud servers, privacy relays such as iCloud Private Relay, and forged crawlers. Every area uses the same list unless you give it one of its own, so comments can catch hosting servers while sign-in leaves them alone. A privacy relay counts as a relay alone, even where it runs on a hosting network, so iCloud Private Relay visitors aren't refused as hosting.
 
 = 🎁 Free to start =
 
@@ -105,7 +105,7 @@ An address already looked up costs no request at all, and a new one waits at mos
 
 = Is it GDPR friendly? =
 
-It sends visitors' IP addresses to InternetData for the areas you turn on, keeps the answers for six hours, and records the visitors it acts on, with their address, for 30 days by default. It adds a suggested paragraph to your privacy policy under Settings > Privacy.
+It sends visitors' IP addresses to InternetData for the areas you turn on, and a user agent naming a crawler where an area blocks forged crawlers, keeps the answers for six hours, and records the visitors it acts on, with their address, for 30 days by default. It adds a suggested paragraph to your privacy policy under Settings > Privacy.
 
 == Screenshots ==
 
@@ -161,7 +161,7 @@ It sends visitors' IP addresses to InternetData for the areas you turn on, keeps
 
 This plugin uses the InternetData API, run by InternetData (https://internetdata.io), to tell where an IP address is and what kind of network it belongs to.
 
-* When a visitor uses an area you turned on (signs in, creates an account, asks for a password reset, comments, sends a contact form, places an order or opens a protected page), the plugin sends the visitor's IP address, with your API key if you added one, to https://api.internetdata.io. The answer is kept on your site for six hours, so the same address is not sent again within that time.
+* When a visitor uses an area you turned on (signs in, creates an account, asks for a password reset, comments, sends a contact form, places an order or opens a protected page), the plugin sends the visitor's IP address, with your API key if you added one, to https://api.internetdata.io. The answer is kept on your site for six hours, so the same address is not sent again within that time. While an area blocks forged crawlers, a user agent naming a crawler is sent with the address, for at most four such user agents per address in six hours, and the answer is kept for that address and user agent.
 * When you open the plugin's settings page, it sends your own IP address the same way, and reads your plan and usage with your API key.
 * When you click Connect with InternetData, the plugin asks https://internetdata.io for a sign-in code and opens https://app.internetdata.io in your browser, where you sign in and pick an API key, which is then sent back to your site.
 

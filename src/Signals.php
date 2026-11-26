@@ -35,6 +35,8 @@ final class Signals
         // A paid plan answers is_hosting; without one it is read by its network's type, which every answer carries.
         'hosting' => ['member' => 'isHosting', 'detail' => 'hosting', 'needs' => self::NEEDS_NOTHING],
         'relay' => ['member' => 'isRelay', 'detail' => 'relay', 'needs' => self::NEEDS_NOTHING],
+        // The one signal judged on the visitor's User-Agent, which a lookup carries only while an area uses it.
+        'spoofed' => ['member' => 'userAgent', 'detail' => 'userAgent', 'needs' => self::NEEDS_PAID],
     ];
 
     /** Signals a pool sighting count applies to, where one sighting can be a shared address. */
@@ -57,6 +59,7 @@ final class Signals
             'dcproxy' => __('Datacenter proxies', 'internetdata'),
             'hosting' => __('Hosting and cloud servers', 'internetdata'),
             'relay' => __('Privacy relays', 'internetdata'),
+            'spoofed' => __('Forged crawlers', 'internetdata'),
             'country' => __('Countries', 'internetdata'),
             'billing' => __('Billing country differs', 'internetdata'),
             'geo' => __('Geo redirect', 'internetdata'),
@@ -77,6 +80,7 @@ final class Signals
             'dcproxy' => __('Proxies running in datacenters.', 'internetdata'),
             'hosting' => __('Servers at hosting and cloud providers, where bots and scripts run. Without a paid plan or the trial, judged by the network an address belongs to.', 'internetdata'),
             'relay' => __('iCloud Private Relay and company web gateways. Mostly ordinary people.', 'internetdata'),
+            'spoofed' => __('Visitors whose browser claims to be a crawler, such as Googlebot, from an address that crawler does not use. A user agent naming a crawler goes with the lookup, for at most four of them per address while answers are kept.', 'internetdata'),
             'country' => __('Where the visitor\'s address is, whatever their browser says. Works on every plan.', 'internetdata'),
             default => '',
         };
@@ -138,6 +142,9 @@ final class Signals
             }
             $country = $answer?->location->country ?? '';
             return $country === '' || in_array($country, $countries, true) ? null : ['location' => ['country' => [$country]]];
+        }
+        if ($signal === 'spoofed') {
+            return ['userAgent' => ['verdict' => 'spoofed']];
         }
         if ($signal === 'hosting' && $answer !== null && $answer->isRelay === true) {
             return null;

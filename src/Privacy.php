@@ -15,7 +15,7 @@ final class Privacy
             return;
         }
         $text = '<p>' . esc_html__(
-            'This site uses InternetData to tell which country a visitor connects from, and whether it is through a VPN, a proxy, Tor or a hosting network. When you sign in, create an account, reset a password, comment, send a form, place an order or open a protected page, your IP address is sent to InternetData (internetdata.io), which answers where it is and what kind of network it belongs to. The answer is kept for a few hours so a later visit does not ask again, and a visit the site acts on is recorded with the address for a set number of days.',
+            'This site uses InternetData to tell which country a visitor connects from, and whether it is through a VPN, a proxy, Tor or a hosting network. When you sign in, create an account, reset a password, comment, send a form, place an order or open a protected page, your IP address is sent to InternetData (internetdata.io), which answers where it is and what kind of network it belongs to. Where the site checks for forged crawlers, your browser\'s user agent is sent with it. The answer is kept for a few hours so a later visit does not ask again, and a visit the site acts on is recorded with the address for a set number of days.',
             'internetdata',
         ) . '</p><p>' . sprintf(
             /* translators: 1: privacy policy URL; 2: terms URL. */
