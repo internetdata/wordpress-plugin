@@ -2,6 +2,13 @@
 
 What each release changed for you, newest first. Each line is a commit's summary, linked to its full description and diff.
 
+## 1.2.0 - 2026-11-26
+
+### Features
+
+- Refuse forged crawlers with a new signal, off until you tick it ([`6833346`](https://github.com/internetdata/wordpress-plugin/commit/683334667db193d550ba329b6e736e366c97dc41))
+  - Forged crawlers, on a paid plan or the trial, refuses a client whose user agent claims a crawler, such as Googlebot, from an address that crawler doesn't use. While an area blocks it, a check sends the visitor's user agent when it names a crawler, never a browser's, for at most four crawler user agents per address every six hours.
+
 ## 1.1.3 - 2026-11-25
 
 ### Fixes
