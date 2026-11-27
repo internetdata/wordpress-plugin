@@ -4,7 +4,7 @@ Tags: block countries, geo redirect, geolocation, vpn, woocommerce
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 8.2
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
@@ -114,6 +114,9 @@ It sends visitors' IP addresses to InternetData for the areas you turn on, and a
 3. A held WooCommerce order and its note.
 
 == Changelog ==
+
+= 1.2.1 =
+* Bundles the InternetData PHP SDK 2.19.0, which reads the free plan's answer as the API now serves it. With 2.17.0, checks made without a paid plan or the trial failed.
 
 = 1.2.0 =
 * New signal, Forged crawlers, on a paid plan or the trial: refuse a client whose user agent claims a crawler, such as Googlebot, from an address that crawler doesn't use. While an area blocks it, a check sends the visitor's user agent when it names a crawler, never a browser's, for at most four crawler user agents per address every six hours. It's off until you tick it.

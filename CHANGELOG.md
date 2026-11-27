@@ -2,6 +2,12 @@
 
 What each release changed for you, newest first. Each line is a commit's summary, linked to its full description and diff.
 
+## 1.2.1 - 2026-11-27
+
+### Fixes
+
+- Take SDK 2.19.0, which reads the free plan's answer ([`e695f80`](https://github.com/internetdata/wordpress-plugin/commit/e695f80a13e092ef2fa2e8215fe4a52fd25a0c2b))
+
 ## 1.2.0 - 2026-11-26
 
 ### Features
