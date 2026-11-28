@@ -15,7 +15,7 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 
 const [address, order, shots] = process.argv.slice(2);
 const site = 'http://wp';
-const paidBadge = 'Paid plan or trial';
+const paidBadge = 'Paid plan or free key';
 const failures = [];
 
 function check(name, ok) {
@@ -48,7 +48,7 @@ try {
     check('the self-check names the address', (await page.textContent('#inetd-connection')).includes('185.220.101.1'));
     check('  ... and says it is Tor', (await page.textContent('#inetd-connection')).includes('Tor'));
     check('an unconnected site offers Connect', await page.isVisible('#inetd-connect'));
-    check('VPNs and the proxies need a paid plan or the trial', (await page.textContent('.inetd-signals')).includes(paidBadge));
+    check('VPNs, hosting and the proxies need a paid plan or a free key', (await page.textContent('.inetd-signals')).includes(paidBadge));
 
     const popup = context.waitForEvent('page');
     await page.click('#inetd-connect');

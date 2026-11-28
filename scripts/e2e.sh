@@ -181,16 +181,18 @@ check_not "Log only refuses nobody" "$out" "$MESSAGE"
 check "  ... and records the attempt" "$(wp db query "SELECT area, action, signals, detail FROM wp_internetdata_activity WHERE action='log'" --skip-column-names)" "login.log.tor.someone"
 
 echo "==> what a site with no key answers"
-settings "{\"signals\":[\"hosting\"],\"areas\":$(areas login block)}"
-out="$(visit "$VPN" http://wp/wp-login.php -d 'log=x&pwd=y&wp-submit=Log+In')"
-check "hosting, by its network's type" "$out" "$MESSAGE"
 settings "{\"signals\":[\"country\"],\"countries\":\"no, SE\",\"areas\":$(areas login block)}"
 out="$(visit "$VPN" http://wp/wp-login.php -d 'log=x&pwd=y&wp-submit=Log+In')"
 check "a listed country, with the country's message" "$out" "$COUNTRY"
 check_not "  ... letting the rest through" "$(visit "$CLEAN" http://wp/wp-login.php -d 'log=x&pwd=y')" "your country"
+settings "{\"signals\":[\"hosting\"],\"areas\":$(areas login block)}"
+out="$(visit "$VPN" http://wp/wp-login.php -d 'log=x&pwd=y&wp-submit=Log+In')"
+check_not "hosting cannot be blocked without a paid plan or a free key" "$out" "$MESSAGE"
+check "  ... and the settings say so" "$(wp option get internetdata_diagnostics --format=json)" '"gaps":\{"signals":\["hosting"\]'
+wp option delete internetdata_diagnostics > /dev/null
 settings "{\"signals\":[\"vpn\"],\"areas\":$(areas login block)}"
 out="$(visit "$VPN" http://wp/wp-login.php -d 'log=x&pwd=y&wp-submit=Log+In')"
-check_not "VPNs cannot be blocked without a paid plan or the trial" "$out" "$MESSAGE"
+check_not "VPNs cannot be blocked without a paid plan or a free key" "$out" "$MESSAGE"
 check "  ... and the settings say so" "$(wp option get internetdata_diagnostics --format=json)" '"gaps":\{"signals":\["vpn"\]'
 # Before WooCommerce, whose activation sends the next admin page to its own setup.
 wp option update internetdata_api_key free-key > /dev/null

@@ -59,21 +59,21 @@ final class SignalsTest extends TestCase
         $this->assertFalse(Condition::matches(Signals::condition(['vpn'], 1), $seenTwice));
     }
 
-    /** Unlimited answers Tor and relays, and no VPN: an answer without a key cannot match one. */
-    public function testAnUnlimitedAnswerLacksTheVpnAndProxies(): void
+    /** A keyless answer carries Tor and relays, and no VPN: it cannot match one. */
+    public function testAKeylessAnswerLacksTheVpnAndProxies(): void
     {
-        $unlimited = self::answer(['isTor' => true]);
-        $this->assertTrue(Condition::matches(Signals::condition(['tor'], 1, $unlimited), $unlimited));
-        $this->assertSame(['isVpn'], Condition::missingMembers(Signals::condition(['vpn'], 1, $unlimited), $unlimited));
-        $this->assertSame(['isResproxy'], Condition::missingMembers(Signals::condition(['resproxy'], 1, $unlimited), $unlimited));
+        $keyless = self::answer(['isTor' => true]);
+        $this->assertTrue(Condition::matches(Signals::condition(['tor'], 1, $keyless), $keyless));
+        $this->assertSame(['isVpn'], Condition::missingMembers(Signals::condition(['vpn'], 1, $keyless), $keyless));
+        $this->assertSame(['isResproxy'], Condition::missingMembers(Signals::condition(['resproxy'], 1, $keyless), $keyless));
     }
 
     public function testWhichPlansServeWhat(): void
     {
-        foreach (['country', 'tor', 'relay', 'hosting'] as $signal) {
+        foreach (['country', 'tor', 'relay'] as $signal) {
             $this->assertTrue(Signals::served($signal, null), "{$signal} without a key");
         }
-        foreach (['vpn', 'pubproxy', 'resproxy', 'mobproxy', 'dcproxy'] as $signal) {
+        foreach (['vpn', 'pubproxy', 'resproxy', 'mobproxy', 'dcproxy', 'hosting'] as $signal) {
             $this->assertFalse(Signals::served($signal, null), "{$signal} without a key");
             $this->assertFalse(Signals::served($signal, 'free'), "{$signal} on a free-plan key, past its daily trial");
             $this->assertTrue(Signals::served($signal, 'starter'), "{$signal} on a paid plan");
@@ -90,25 +90,29 @@ final class SignalsTest extends TestCase
         $this->assertSame(['resproxy'], Condition::missingMembers($counted, $answer));
     }
 
-    /** An Unlimited answer carries no is_hosting, but its network's type answers the same question. */
-    public function testHostingWithoutAPaidPlanReadsTheNetworksType(): void
+    /** Hosting is a paid answer's is_hosting alone: a network's type an older free answer carried never stands in. */
+    public function testHostingIsAPaidAnswersIsHostingAlone(): void
     {
-        $unlimited = self::answer(['asn' => self::asn('hosting')]);
-        $condition = Signals::condition(['hosting'], 1, $unlimited);
-        $this->assertSame([['asn' => ['type' => 'hosting']]], $condition);
-        $this->assertTrue(Condition::matches($condition, $unlimited));
-        $this->assertSame([], Condition::missingMembers($condition, $unlimited));
+        $keyless = self::answer(['asn' => self::asn('hosting')]);
+        $condition = Signals::condition(['hosting'], 1, $keyless);
+        $this->assertSame([['isHosting' => true]], $condition);
+        $this->assertFalse(Condition::matches($condition, $keyless));
+        $this->assertSame(['isHosting'], Condition::missingMembers($condition, $keyless));
+        $typeless = self::answer(['asn' => new Asn(asn: 15169, name: 'Google LLC', domain: 'google.com', type: '', prefix: '8.8.8.0/24')]);
+        $this->assertSame(['isHosting'], Condition::missingMembers(Signals::condition(['hosting'], 1, $typeless), $typeless));
         $paid = self::answer(['isHosting' => false, 'hosting' => new ClassDetail(), 'asn' => self::asn('hosting')]);
         $this->assertFalse(Condition::matches(Signals::condition(['hosting'], 1, $paid), $paid), 'a paid answer is taken at its word');
+        $hosted = self::answer(['isHosting' => true, 'hosting' => new ClassDetail()]);
+        $this->assertTrue(Condition::matches(Signals::condition(['hosting'], 1, $hosted), $hosted));
     }
 
     /** WARP, iCloud Private Relay and Zscaler run on hosting networks: a relay is judged as a relay alone. */
     public function testARelayOnAHostingNetworkIsNotHosting(): void
     {
         $warp = new Asn(asn: 13335, name: 'Cloudflare, Inc.', domain: 'cloudflare.com', type: 'hosting', prefix: '104.28.0.0/16');
-        $unlimited = self::answer(['isRelay' => true, 'asn' => $warp]);
-        $this->assertSame([], Signals::condition(['hosting'], 1, $unlimited));
-        $this->assertNull(Signals::one('hosting', 1, $unlimited));
+        $keyless = self::answer(['isRelay' => true, 'asn' => $warp]);
+        $this->assertSame([], Signals::condition(['hosting'], 1, $keyless));
+        $this->assertNull(Signals::one('hosting', 1, $keyless));
         $paid = self::answer(['isRelay' => true, 'isHosting' => true, 'hosting' => new ClassDetail(), 'asn' => $warp]);
         $this->assertSame([], Signals::condition(['hosting'], 1, $paid));
         $condition = Signals::condition(['vpn', 'hosting', 'relay'], 1, $paid);
@@ -147,7 +151,7 @@ final class SignalsTest extends TestCase
     }
 
     /**
-     * An Unlimited answer for a home connection in Germany, with the given members over it.
+     * A keyless answer for a home connection in Germany, with the given members over it.
      *
      * @param array<string, mixed> $members
      */

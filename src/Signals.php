@@ -11,12 +11,10 @@ defined('ABSPATH') || exit;
 /**
  * What the plugin can act on, in the order the settings show it.
  *
- * Each signal is one member of a lookup answer, and which plans answer it is the API's to say. On
- * Unlimited, the free plan, with a key or without one, a lookup carries Tor, relays, where the address
- * is to the country and the network it belongs to; a paid plan answers every field, VPNs, proxies
- * and hosting among them, with the detail behind each. A key on the free plan also gets a trial: its
- * account's lookups answer as a paid plan's while it lasts, and the rest as Unlimited's,
- * which `trial_expired` says.
+ * Each signal is one member of a lookup answer, and which plans answer it is the API's to say. A lookup
+ * without a key carries Tor, relays and where the address is, to the country; a paid plan answers every
+ * field, VPNs, proxies and hosting among them, with the detail behind each. A free key's account also
+ * gets full answers for a while, and the keyless ones after, which `trial_expired` says.
  */
 final class Signals
 {
@@ -32,8 +30,8 @@ final class Signals
         'resproxy' => ['member' => 'isResproxy', 'detail' => 'resproxy', 'needs' => self::NEEDS_PAID],
         'mobproxy' => ['member' => 'isMobproxy', 'detail' => 'mobproxy', 'needs' => self::NEEDS_PAID],
         'dcproxy' => ['member' => 'isDcproxy', 'detail' => 'dcproxy', 'needs' => self::NEEDS_PAID],
-        // A paid plan answers is_hosting; without one it is read by its network's type, which every answer carries.
-        'hosting' => ['member' => 'isHosting', 'detail' => 'hosting', 'needs' => self::NEEDS_NOTHING],
+        // A paid answer's alone: a keyless one carries neither is_hosting nor the network's type.
+        'hosting' => ['member' => 'isHosting', 'detail' => 'hosting', 'needs' => self::NEEDS_PAID],
         'relay' => ['member' => 'isRelay', 'detail' => 'relay', 'needs' => self::NEEDS_NOTHING],
         // The one signal judged on the visitor's User-Agent, which a lookup carries only while an area uses it.
         'spoofed' => ['member' => 'userAgent', 'detail' => 'userAgent', 'needs' => self::NEEDS_PAID],
@@ -78,7 +76,7 @@ final class Signals
             'resproxy' => __('Home connections rented out as proxies.', 'internetdata'),
             'mobproxy' => __('Phone connections rented out as proxies. Carriers share these addresses with ordinary customers.', 'internetdata'),
             'dcproxy' => __('Proxies running in datacenters.', 'internetdata'),
-            'hosting' => __('Servers at hosting and cloud providers, where bots and scripts run. Without a paid plan or the trial, judged by the network an address belongs to.', 'internetdata'),
+            'hosting' => __('Servers at hosting and cloud providers, where bots and scripts run.', 'internetdata'),
             'relay' => __('iCloud Private Relay and company web gateways. Mostly ordinary people.', 'internetdata'),
             'spoofed' => __('Visitors whose browser claims to be a crawler, such as Googlebot, from an address that crawler does not use. A user agent naming a crawler goes with the lookup, for at most four of them per address while answers are kept.', 'internetdata'),
             'country' => __('Where the visitor\'s address is, whatever their browser says. Works on every plan.', 'internetdata'),
@@ -88,10 +86,8 @@ final class Signals
 
     /**
      * The block condition for a set of signals, in the SDK's condition language: a list, so any one
-     * signal is enough. Given the answer, it asks what that answer can tell: an Unlimited answer carries
-     * no `is_hosting`, so hosting is read off the type of the network the address belongs to. A relay is
-     * judged by the relay signal alone: iCloud Private Relay, WARP and the company gateways run on
-     * hosting networks, and most of their addresses answer `is_hosting` too.
+     * signal is enough. A relay is judged by the relay signal alone: iCloud Private Relay, WARP and the
+     * company gateways run on hosting networks, and most of their addresses answer `is_hosting` too.
      *
      * @param list<string> $signals
      * @param list<string> $countries
@@ -148,9 +144,6 @@ final class Signals
         }
         if ($signal === 'hosting' && $answer !== null && $answer->isRelay === true) {
             return null;
-        }
-        if ($signal === 'hosting' && $answer !== null && $answer->isHosting === null) {
-            return ['asn' => ['type' => 'hosting']];
         }
         $def = self::ALL[$signal];
         $one = [$def['member'] => true];

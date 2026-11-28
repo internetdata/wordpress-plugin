@@ -1,7 +1,7 @@
 <?php
 
 // A stand-in for the InternetData API, answering the addresses the e2e scenarios use in the shapes the
-// real API answers them, by plan: no key (Unlimited's fields), a free-plan key within its trial
+// real API answers them, by plan: no key (its fewer fields), a free-plan key within its trial
 // (`free-key`), one past it (`trial-spent`), a paid key past its organization's overage cap
 // (`cap-reached`), or any other key as a paid one.
 // Every request is appended to /tmp/stub.log, so a scenario can count lookups. Run with `php -S`.
@@ -164,8 +164,9 @@ switch ($ip) {
         $company = ['name' => 'Comcast Cable Communications, LLC', 'domain' => 'comcast.com'];
         break;
 }
+// An answer without a key has no network type, which a paid answer's `asn` and `company` carry.
 $unlimited = ['ip' => $ip, 'is_bogon' => false] + $free + $details + [
-    'location' => $location, 'asn' => $asn + ['country' => $location['country'], 'rpki_status' => 'valid'],
+    'location' => $location, 'asn' => array_diff_key($asn, ['type' => 1]) + ['country' => $location['country'], 'rpki_status' => 'valid'],
     'company' => $company, 'hostname' => '',
     'abuse' => ['email' => 'abuse@' . $asn['domain']],
 ];

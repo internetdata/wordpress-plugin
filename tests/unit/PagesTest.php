@@ -26,7 +26,7 @@ final class PagesTest extends TestCase
     }
 
     /** Without a key, or past the trial, an answer has is_bot alone, which says nothing of whose bot it is. */
-    public function testAnUnlimitedAnswerLetsNoCrawlerThrough(): void
+    public function testAKeylessAnswerLetsNoCrawlerThrough(): void
     {
         $this->assertFalse(Pages::vouchedCrawler(SignalsTest::answer(['ip' => '5.255.253.1', 'isBot' => true])));
         $this->assertFalse(Pages::vouchedCrawler(SignalsTest::answer()));

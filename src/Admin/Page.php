@@ -29,7 +29,7 @@ final class Page
     private const GROUP = 'internetdata';
     private const ACCOUNT_CACHE = 'internetdata_account';
     private const SET_UP = 'internetdata_set_up';
-    /** The plan an account with no subscription is on, which InternetData calls Unlimited. */
+    /** The plan an account with no subscription is on. */
     private const FREE_PLAN = 'free';
 
     public function __construct(private readonly Plugin $plugin)
@@ -241,7 +241,7 @@ final class Page
         echo '<h2>' . esc_html__('Account', 'internetdata') . '</h2>';
         if ($account instanceof Entitlement) {
             $usage = $account->usage;
-            // The free plan, Unlimited, has no allowance to spend: its usage is its trial, the checks answered
+            // The free plan has no allowance to spend: its usage is its trial, the checks answered
             // with every signal. It runs once, from the organization's first keyed lookup to the window's end
             // or the quota, whichever comes first, and never resets (since 2026-11-24; a UTC month before).
             $free = $account->plan->key === self::FREE_PLAN;
@@ -267,7 +267,7 @@ final class Page
             printf(
                 '<p><strong>%s</strong> %s</p>',
                 esc_html(sprintf(
-                    /* translators: %s: the plan's name, such as "Unlimited" or "Data". */
+                    /* translators: %s: the plan's name, such as "Data". */
                     __('Connected, on the %s plan.', 'internetdata'),
                     $account->plan->name,
                 )),
@@ -280,7 +280,7 @@ final class Page
                 $account->plan->tier === 'free' ? esc_html__('Upgrade for every signal', 'internetdata') : esc_html__('Manage plan', 'internetdata'),
             );
             if (!$settings->keyInConfig()) {
-                $this->postButton('internetdata_disconnect', __('Disconnect', 'internetdata'), 'button-link-delete', __('Disconnect this site? It goes back to checking without an account, which catches no VPNs or proxies.', 'internetdata'));
+                $this->postButton('internetdata_disconnect', __('Disconnect', 'internetdata'), 'button-link-delete', __('Disconnect this site? It goes back to checking without an account, which catches no VPNs, proxies or hosting networks.', 'internetdata'));
             }
             echo '</div>';
             if ($settings->keyInConfig()) {
@@ -304,7 +304,7 @@ final class Page
             return;
         }
         echo '<p>' . esc_html__('Connect an InternetData account to try every signal, VPNs and proxies included. A paid plan checks every signal on every visit.', 'internetdata') . '</p>';
-        echo '<p class="description">' . esc_html__('Without an account the plugin checks countries, Tor, privacy relays and hosting, judged by the network an address belongs to, with no cap, and runs your country rules, geo redirects and the checkout\'s billing country check.', 'internetdata') . '</p>';
+        echo '<p class="description">' . esc_html__('You can try the plugin without an account: it runs your country rules, geo redirects and the checkout\'s billing country check, and checks for Tor and privacy relays.', 'internetdata') . '</p>';
         printf(
             '<p><button type="button" class="button button-primary" id="inetd-connect">%s</button> <span id="inetd-connect-status" aria-live="polite"></span></p>',
             esc_html__('Connect with InternetData', 'internetdata'),
@@ -407,7 +407,7 @@ final class Page
         echo '<h2>' . esc_html__('What to block', 'internetdata') . '</h2>';
         echo '<p class="description">' . esc_html__('Every area below acts on these, unless you give it signals of its own.', 'internetdata') . '</p>';
         if (array_filter(Signals::keys(), static fn (string $s): bool => !Signals::served($s, $tier)) !== []) {
-            echo '<p class="description">' . esc_html__('A signal marked "Paid plan or trial" is answered on a paid plan, and on a free account during its trial. Otherwise it blocks nobody.', 'internetdata') . '</p>';
+            echo '<p class="description">' . esc_html__('A signal marked "Paid plan or free key" needs a paid plan or a free key\'s full answers. Without them it blocks nobody.', 'internetdata') . '</p>';
         }
         $gaps = $this->plugin->diagnostics->recent()['gaps']['signals'] ?? [];
         if (is_array($gaps) && $gaps !== []) {
@@ -434,7 +434,7 @@ final class Page
         foreach (Signals::keys() as $signal) {
             $badge = '';
             if (!Signals::served($signal, $tier)) {
-                $badge = __('Paid plan or trial', 'internetdata');
+                $badge = __('Paid plan or free key', 'internetdata');
             }
             $list = '';
             if ($signal === 'country' && $countries !== null) {
