@@ -2,6 +2,15 @@
 
 What each release changed for you, newest first. Each line is a commit's summary, linked to its full description and diff.
 
+## 1.2.2 - 2026-11-28
+
+### Fixes
+
+- Take SDK 2.20.0 and name crawlers by its terms ([`624c659`](https://github.com/internetdata/wordpress-plugin/commit/624c659918497c2930ec4f39a6e97aee86f49788))
+  - Bundles the InternetData PHP SDK 2.20.0. Forged crawlers sends a user agent only when the SDK names it a crawler.
+- Check hosting on a paid plan or a free key's full answers ([`053ca79`](https://github.com/internetdata/wordpress-plugin/commit/053ca793ca501ec744f30141824b66b493e53f05))
+  - Hosting networks are checked on a paid plan or a free key's full answers, with a warning otherwise. The signal's badge reads Paid plan or free key.
+
 ## 1.2.1 - 2026-11-27
 
 ### Fixes
