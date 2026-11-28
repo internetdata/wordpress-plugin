@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7edbc79bbe53f7a22c61929f9eb3887b",
+    "content-hash": "62652df7a6812ed698863024793d3790",
     "packages": [
         {
             "name": "guzzlehttp/guzzle",
@@ -339,16 +339,16 @@
         },
         {
             "name": "internetdata/internetdata",
-            "version": "v2.19.0",
+            "version": "v2.20.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/internetdata/sdk-php.git",
-                "reference": "1765a9c4b5c0272bf20eeca7578d4cf35156584f"
+                "reference": "6acab0c46b0204ebd2c38ab70183618c66f2a7cb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/internetdata/sdk-php/zipball/1765a9c4b5c0272bf20eeca7578d4cf35156584f",
-                "reference": "1765a9c4b5c0272bf20eeca7578d4cf35156584f",
+                "url": "https://api.github.com/repos/internetdata/sdk-php/zipball/6acab0c46b0204ebd2c38ab70183618c66f2a7cb",
+                "reference": "6acab0c46b0204ebd2c38ab70183618c66f2a7cb",
                 "shasum": ""
             },
             "require": {
@@ -402,7 +402,7 @@
                 "issues": "https://github.com/internetdata/sdk-php/issues",
                 "source": "https://github.com/internetdata/sdk-php"
             },
-            "time": "2026-11-27T06:33:24+00:00"
+            "time": "2026-11-28T06:26:15+00:00"
         },
         {
             "name": "psr/http-client",
